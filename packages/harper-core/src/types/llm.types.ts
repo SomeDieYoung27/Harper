@@ -42,7 +42,7 @@
     handler ? :(options : LanguageModelV2CallOptions) => Promise<LanguageModelV2CallOptions>;
   };
 
-  export type LLMS = {
+  export type LLMs = {
     default : LLMConfig;
     [key: string]: LLMConfig;
   }
