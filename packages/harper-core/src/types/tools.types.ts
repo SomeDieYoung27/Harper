@@ -1,5 +1,5 @@
 import { JSONSchema7 } from "json-schema";
-import AgentContext from "../agent/context";
+import { AgentContext } from "../core/context";
 import { LanguageModelV2ToolCallPart } from "@ai-sdk/provider";
 
 export type ToolSchema =
@@ -26,3 +26,49 @@ export type ToolSchema =
         parameters: JSONSchema7;
       };
     };
+
+export type ToolResult = {
+  content:
+    | [
+        {
+          type: "text";
+          text: string;
+        }
+      ]
+    | [
+        {
+          type: "image";
+          data: string;
+          mimeType?: string;
+        }
+      ]
+    | [
+        {
+          type: "text";
+          text: string;
+        },
+        {
+          type: "image";
+          data: string;
+          mimeType?: string;
+        }
+      ];
+  isError?: boolean;
+  extInfo?: Record<string, unknown>;
+};
+
+export interface ToolExecuter {
+  execute: (
+    args: Record<string, unknown>,
+    agentContext: AgentContext,
+    toolCall: LanguageModelV2ToolCallPart
+  ) => Promise<ToolResult>;
+}
+
+export interface Tool extends ToolExecuter {
+    readonly name: string;
+    readonly description?: string;
+    readonly parameters?: JSONSchema7;
+    readonly noPlan?: boolean;
+    readonly planDescription?: string;
+}
